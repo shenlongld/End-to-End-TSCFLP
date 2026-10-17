@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ss-tscflp"
+version = "1.0.0"
+description = "面向单源两级容量约束设施选址问题的可复现神经网络与运筹优化求解工具"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "torch==2.11.0",
+    "tensordict==0.13.0",
+    "torchrl==0.13.3",
+    "rl4co==0.6.0",
+    "lightning==2.6.6",
+    "numpy==2.3.5",
+    "scipy==1.16.3",
+    "PyYAML==6.0.3",
+]
+
+[project.optional-dependencies]
+dev = ["pytest==9.1.1", "ruff==0.17.0", "build>=1.2,<2"]
+gurobi = ["gurobipy==13.0.3"]
+
+[project.scripts]
+ss-tscflp-generate = "ss_tscflp.generator:main"
+ss-tscflp-train = "ss_tscflp.train:main"
+ss-tscflp-infer = "ss_tscflp.infer:main"
+ss-tscflp-evaluate = "ss_tscflp.evaluate:main"
+ss-tscflp-sa = "ss_tscflp.baselines.sa:main"
+ss-tscflp-gurobi = "ss_tscflp.baselines.gurobi:main"
+ss-tscflp-benchmark = "ss_tscflp.evaluate:benchmark_main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

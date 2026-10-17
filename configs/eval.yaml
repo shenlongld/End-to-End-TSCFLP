@@ -1,0 +1,14 @@
+device: cpu
+threads: 1
+seed: 99123
+data: ../data/test/instances.npz
+checkpoint: ../checkpoints/path/best.npz
+output: ../results/evaluation
+methods: [greedy, sampling, sa]
+batch_size: 8
+samples: 64
+sample_chunk: 8
+sa_iterations: 5000
+sa_restarts: 4
+time_limit: 60.0
+mip_gap: 0.0

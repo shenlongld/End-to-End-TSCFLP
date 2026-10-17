@@ -1,0 +1,11 @@
+device: cpu
+threads: 1
+seed: 42
+n_w: 3
+n_s: 10
+n_c: 100
+cost_factor: 10.0
+train_size: 256
+val_size: 32
+test_size: 32
+output: ../data
