@@ -46,7 +46,7 @@ python -m pip install ".[gurobi]"
 # 1. 生成示例数据
 python scripts/run_generate.py
 
-# 2. 快速训练（smoke 预设）
+# 2. 快速训练
 python scripts/run_train.py --preset smoke
 
 # 3. 执行推理
