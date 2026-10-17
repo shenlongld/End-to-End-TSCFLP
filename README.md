@@ -36,8 +36,6 @@ python -m pip install -e .
 python -m pip install ".[gurobi]"
 ```
 
-> **注意**：使用 GPU 请先安装与对应 PyTorch 版本匹配的 CUDA 构建，并在运行时通过 `--device cuda:0` 指定。若指定设备不存在会直接报错，不会隐式切换回 CPU。
-
 ---
 
 ## 快速开始
