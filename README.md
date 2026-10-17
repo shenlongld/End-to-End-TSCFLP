@@ -40,7 +40,7 @@ python -m pip install ".[gurobi]"
 
 ## 快速开始
 
-按顺序执行下列指令，完成一次冒烟测试（Smoke Test）全流程：
+按顺序执行下列指令，完成一次可行性测试：
 
 ```bash
 # 1. 生成示例数据
@@ -84,7 +84,7 @@ ss-tscflp-generate --config configs/generator.yaml
 # 运行标准规模训练（3 仓库, 10 站点, 100 顾客）
 python scripts/run_train.py
 
-# 训练 two_stage 策略（CPU，在线合成数据模式）
+# 训练策略（CPU，在线合成数据模式）
 ss-tscflp-train \
   --method two_stage \
   --device cpu \
