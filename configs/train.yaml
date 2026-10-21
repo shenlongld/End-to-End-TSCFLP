@@ -1,12 +1,11 @@
 # 配置中的路径相对本 YAML 文件解析，命令行路径相对当前工作目录解析。
-method: path
 device: cpu
 threads: 1
 seed: 45
 # 显式使用 synthetic 模式，每轮沿用原有策略训练的新实例生成流程。
 # 使用固定数据时，设置 data_mode: npz，并添加 dataset_dir: ../data。
 data_mode: synthetic
-epochs: 30
+epochs: 150
 train_instances: 256
 batch_instances: 8
 group_size: 8

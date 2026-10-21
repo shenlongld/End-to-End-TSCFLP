@@ -5,8 +5,8 @@ import time
 import torch
 
 from .common import synchronize
-from .env import PathTSCFLPEnv, TSCFLPEnv
-from .model import PathTSCFLPPolicy, load_path_policy, load_policy
+from .env import Env
+from .model import load_policy
 from .problem import check_feasible, objective
 
 
@@ -24,27 +24,21 @@ def best_of_k(policy, env, data, samples=64, sample_chunk=16, decode_type="sampl
     device = data["customer_demand"].device
     synchronize(device)
     started = time.perf_counter()
-    is_path = isinstance(policy, PathTSCFLPPolicy)
-    embedding = policy.encoder(data) if is_path else None
+    embedding = policy.encoder(data)
     b = data.batch_size[0]
     best, best_rank = None, None
     failed_count = torch.zeros(b, dtype=torch.long, device=data["customer_demand"].device)
     try:
         for start in range(0, samples, sample_chunk):
             k = min(sample_chunk, samples - start)
-            if is_path:
-                out = policy(
-                    data,
-                    env,
-                    decode_type=decode_type,
-                    num_samples=k,
-                    return_actions=False,
-                    embeddings=embedding,
-                )
-            else:
-                out = policy(
-                    data.repeat_interleave(k, 0), env, decode_type=decode_type, return_actions=False
-                )
+            out = policy(
+                data,
+                env,
+                decode_type=decode_type,
+                num_samples=k,
+                return_actions=False,
+                embeddings=embedding,
+            )
             failed = out["infeasible"].reshape(b, k)
             ranks = out["cost"].reshape(b, k).masked_fill(failed, torch.inf)
             selected = ranks.argmin(-1)
@@ -78,18 +72,10 @@ def best_of_k(policy, env, data, samples=64, sample_chunk=16, decode_type="sampl
 
 def load_solver(checkpoint, device):
     from .common import validate_device
-    from .dataset import load_checkpoint
 
     validate_device(device)
-    payload = load_checkpoint(checkpoint)
-    if payload.get("format_version") == 2 and payload.get("architecture") == "coupled_path_v1":
-        policy, payload = load_path_policy(checkpoint, device)
-        env = PathTSCFLPEnv(**payload["env_config"])
-    elif payload.get("format_version") == 1 and payload.get("architecture") is None:
-        policy, payload = load_policy(checkpoint, device)
-        env = TSCFLPEnv(**payload["env_config"])
-    else:
-        raise ValueError("Unsupported checkpoint architecture or version")
+    policy, payload = load_policy(checkpoint, device)
+    env = Env(**payload["env_config"])
     return policy, env, payload
 
 

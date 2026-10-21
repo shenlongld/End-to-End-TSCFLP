@@ -125,24 +125,6 @@ def make_dataloader(dataset: NPZDataset, *, batch_size: int, shuffle: bool, seed
     )
 
 
-class FixedDatasetGenerator:
-    # 沿用原始 rollout 基线逻辑，从验证集中进行无放回采样。
-
-    def __init__(self, data: TensorDict, seed: int, device: str):
-        validate_instance(data)
-        self.data = data.detach().cpu().clone()
-        self.n_w, self.n_s, self.n_c = Instance(data).dimensions
-        self.device = torch.device(device)
-        self.rng = torch.Generator(device="cpu").manual_seed(seed)
-
-    def __call__(self, batch_size: int | Sequence[int] = (1,)):
-        shape = [batch_size] if isinstance(batch_size, int) else list(batch_size)
-        if len(shape) != 1 or not 1 <= shape[0] <= self.data.batch_size[0]:
-            raise ValueError("Fixed dataset requests must be [B] within the split size")
-        rows = torch.randperm(self.data.batch_size[0], generator=self.rng)[: shape[0]]
-        return self.data[rows].to(self.device)
-
-
 def save_checkpoint(payload: dict, path) -> None:
     # 以张量和基础类型树保存优化器及随机数状态，不使用 pickle。
     path = _npz_path(path)

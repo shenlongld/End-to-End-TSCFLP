@@ -1,0 +1,372 @@
+{
+  "format": "ss_tscflp NPZ: named float32 arrays; no pickle",
+  "generator": "ss_tscflp.generator.TSCFLPGenerator",
+  "generator_settings": {
+    "customer_demand": "continuous U[1,10)",
+    "coordinates": "U[0,1)^2",
+    "warehouse_fixed_cost": "U[50,100)",
+    "station_fixed_cost": "U[20,50)",
+    "unit_transport_cost": "10 * Euclidean distance",
+    "shared_total_capacity_ratio": "U[1.3,1.8)",
+    "feasible_witness": true
+  },
+  "training": {
+    "mode": "synthetic",
+    "seed": 45,
+    "generator_seed": 10045,
+    "instances_per_epoch": 256,
+    "total_epochs": 150,
+    "best_epoch": 145,
+    "validation_seed": 20045,
+    "validation_instances": 32,
+    "note": "The original online training mode is unchanged. These three NPZ files archive its exact 150 calls of 256 instances; they are not a replacement fixed training distribution.",
+    "archived_instances": 38400,
+    "archived_parts": [
+      "3_10_100/train/epochs_001_050.npz",
+      "3_10_100/train/epochs_051_100.npz",
+      "3_10_100/train/epochs_101_150.npz"
+    ],
+    "first_epoch": 1,
+    "last_epoch": 150,
+    "instances_through_best_epoch": 37120,
+    "terminal_rng_matches_original_epoch150": true
+  },
+  "datasets": {
+    "1_5_100/test/instances.npz": {
+      "distribution": "historical_independent_cost_matrix",
+      "role": "original 1-5-100 test split",
+      "source_name": "1_5_100/test.jsonl",
+      "source_sha256": "870be4da49aae5ae47c83f2e389e87eaf965e3c044245855defc16c91603039e",
+      "seed_start": 32000000,
+      "seed_end": 32000999,
+      "original_to_float32_max_abs_error": {
+        "warehouse_capacity": 0.0,
+        "station_capacity": 0.0,
+        "customer_demand": 0.0,
+        "warehouse_fixed_cost": 9.535621465772692e-07,
+        "station_fixed_cost": 4.767789256732158e-07,
+        "cost_ws": 5.960112470226875e-08,
+        "cost_sc": 5.960435833785027e-08
+      },
+      "note": "Same float32 conversion as the previous RL4CO evaluation; no coordinate fabrication or rescaling.",
+      "count": 1000,
+      "dimensions": [
+        1,
+        5,
+        100
+      ],
+      "sha256": "083966fb1741b951b3a171ca431559f8203d87389b95b6d57ed9c22f76ddbabf",
+      "fields": [
+        "warehouse_capacity",
+        "station_capacity",
+        "customer_demand",
+        "warehouse_fixed_cost",
+        "station_fixed_cost",
+        "cost_ws",
+        "cost_sc"
+      ],
+      "round_trip_exact": true
+    },
+    "1_5_100/train/instances.npz": {
+      "distribution": "historical_independent_cost_matrix",
+      "role": "original 1-5-100 train split",
+      "source_name": "1_5_100/train.jsonl",
+      "source_sha256": "29988d9d81633dd52af1e20e75830d2f8d60b1f4459e458ce0fc4a1fd68e6619",
+      "seed_start": 40000000,
+      "seed_end": 40003999,
+      "original_to_float32_max_abs_error": {
+        "warehouse_capacity": 0.0,
+        "station_capacity": 0.0,
+        "customer_demand": 0.0,
+        "warehouse_fixed_cost": 9.535381266800869e-07,
+        "station_fixed_cost": 4.76819439043652e-07,
+        "cost_ws": 5.960084625833417e-08,
+        "cost_sc": 5.960462790000065e-08
+      },
+      "note": "Same float32 conversion as the previous RL4CO evaluation; no coordinate fabrication or rescaling.",
+      "count": 4000,
+      "dimensions": [
+        1,
+        5,
+        100
+      ],
+      "sha256": "ed730e8d0ed19e21d9ed5d94411603857d8871094a2ab61b01eca8c70cdfce94",
+      "fields": [
+        "warehouse_capacity",
+        "station_capacity",
+        "customer_demand",
+        "warehouse_fixed_cost",
+        "station_fixed_cost",
+        "cost_ws",
+        "cost_sc"
+      ],
+      "round_trip_exact": true
+    },
+    "1_5_100/val/instances.npz": {
+      "distribution": "historical_independent_cost_matrix",
+      "role": "original 1-5-100 val split",
+      "source_name": "1_5_100/validation.jsonl",
+      "source_sha256": "427e86a4325e02806b8eeafb702331887b0b9b3fac9a8b477e488f00f177af7d",
+      "seed_start": 31000000,
+      "seed_end": 31000999,
+      "original_to_float32_max_abs_error": {
+        "warehouse_capacity": 0.0,
+        "station_capacity": 0.0,
+        "customer_demand": 0.0,
+        "warehouse_fixed_cost": 9.513650169878929e-07,
+        "station_fixed_cost": 4.7664273239433896e-07,
+        "cost_ws": 5.958451176901747e-08,
+        "cost_sc": 5.960413362871009e-08
+      },
+      "note": "Same float32 conversion as the previous RL4CO evaluation; no coordinate fabrication or rescaling.",
+      "count": 1000,
+      "dimensions": [
+        1,
+        5,
+        100
+      ],
+      "sha256": "d448a002637a11bf3d5b7149ddf8c745d46dad1a7e2551b5163e042175558aef",
+      "fields": [
+        "warehouse_capacity",
+        "station_capacity",
+        "customer_demand",
+        "warehouse_fixed_cost",
+        "station_fixed_cost",
+        "cost_ws",
+        "cost_sc"
+      ],
+      "round_trip_exact": true
+    },
+    "1_5_100_matched/test/instances.npz": {
+      "distribution": "geometric_feasible_v1",
+      "role": "same-generator size transfer; 128 instances",
+      "source_name": "matched_1_5_100/instances.npz",
+      "source_sha256": "5f835e685584b370b50b8013d99386d6ee86a5633e913c481ac2683f0dbe26bd",
+      "count": 128,
+      "dimensions": [
+        1,
+        5,
+        100
+      ],
+      "sha256": "774ee58b9ad7b6ec29f7b2de0dad4a96bf2c943c7a2aab3f3f02d2dd1b10c5c3",
+      "fields": [
+        "warehouse_capacity",
+        "station_capacity",
+        "customer_demand",
+        "warehouse_fixed_cost",
+        "station_fixed_cost",
+        "cost_ws",
+        "cost_sc",
+        "warehouse_loc",
+        "station_loc",
+        "customer_loc"
+      ],
+      "round_trip_exact": true
+    },
+    "20_100_1000/test/instances.npz": {
+      "distribution": "geometric_feasible_v1",
+      "role": "four historical monitor instances; not a sealed test set",
+      "source_name": "large_20_100_1000/instances.npz",
+      "source_sha256": "28607cd030d42823c190417a8e3fbdc0b500c557376ac4b292a6c63bced7c51c",
+      "count": 4,
+      "dimensions": [
+        20,
+        100,
+        1000
+      ],
+      "sha256": "6dd93dda27d9fc3004e232d9d82295de8efaeb39c761f1fb99284c4ae0790fd2",
+      "fields": [
+        "warehouse_capacity",
+        "station_capacity",
+        "customer_demand",
+        "warehouse_fixed_cost",
+        "station_fixed_cost",
+        "cost_ws",
+        "cost_sc",
+        "warehouse_loc",
+        "station_loc",
+        "customer_loc"
+      ],
+      "round_trip_exact": true
+    },
+    "3_10_100/test/instances.npz": {
+      "distribution": "geometric_feasible_v1",
+      "role": "3-10-100 fixed evaluation set",
+      "source_name": "benchmark_1000_20261016_r1/instances.pt",
+      "source_sha256": "076cded1f344276a6eb94c7e6a6285c8338edbf0dc15c6c8e1f55c85c6865af2",
+      "prefix": {
+        "count": 32,
+        "role": "previous adaptive-search confirmation"
+      },
+      "extension": {
+        "count": 968,
+        "seed": 731004,
+        "generation_batch_size": 968
+      },
+      "sealed": false,
+      "count": 1000,
+      "dimensions": [
+        3,
+        10,
+        100
+      ],
+      "sha256": "5dd8cc158764ae54f618073d672c6650d7d128c1fd8b6f1db15cb91a2cf0578c",
+      "fields": [
+        "warehouse_capacity",
+        "station_capacity",
+        "customer_demand",
+        "warehouse_fixed_cost",
+        "station_fixed_cost",
+        "cost_ws",
+        "cost_sc",
+        "warehouse_loc",
+        "station_loc",
+        "customer_loc"
+      ],
+      "round_trip_exact": true
+    },
+    "3_10_100/train/epochs_001_050.npz": {
+      "distribution": "geometric_feasible_v1",
+      "role": "archived online training stream",
+      "seed": 10045,
+      "generator_call_batch_size": 256,
+      "first_epoch": 1,
+      "last_epoch": 50,
+      "instances_per_epoch": 256,
+      "instance_order": "original generation order before training minibatch shuffling",
+      "reconstruction": "exact replay checked against the original frozen generator",
+      "original_generator_sha256": "3d739a83bada2e5b4de2b1a5bc1e4eb53727d75a270a61cd03e301c8e0ceb416",
+      "count": 12800,
+      "dimensions": [
+        3,
+        10,
+        100
+      ],
+      "sha256": "3f842a07f0408d3f86cbdca02166660cd463dfcb6de400f2cf8017b95cf11936",
+      "bytes": 62898743,
+      "fields": [
+        "warehouse_capacity",
+        "station_capacity",
+        "customer_demand",
+        "warehouse_fixed_cost",
+        "station_fixed_cost",
+        "cost_ws",
+        "cost_sc",
+        "warehouse_loc",
+        "station_loc",
+        "customer_loc"
+      ],
+      "round_trip_exact": true
+    },
+    "3_10_100/train/epochs_051_100.npz": {
+      "distribution": "geometric_feasible_v1",
+      "role": "archived online training stream",
+      "seed": 10045,
+      "generator_call_batch_size": 256,
+      "first_epoch": 51,
+      "last_epoch": 100,
+      "instances_per_epoch": 256,
+      "instance_order": "original generation order before training minibatch shuffling",
+      "reconstruction": "exact replay checked against the original frozen generator",
+      "original_generator_sha256": "3d739a83bada2e5b4de2b1a5bc1e4eb53727d75a270a61cd03e301c8e0ceb416",
+      "count": 12800,
+      "dimensions": [
+        3,
+        10,
+        100
+      ],
+      "sha256": "37fcee68e56fa67eef36b88753609e146d9ad7e11e19c3f8a7ef0fe9eac2da9d",
+      "bytes": 62900824,
+      "fields": [
+        "warehouse_capacity",
+        "station_capacity",
+        "customer_demand",
+        "warehouse_fixed_cost",
+        "station_fixed_cost",
+        "cost_ws",
+        "cost_sc",
+        "warehouse_loc",
+        "station_loc",
+        "customer_loc"
+      ],
+      "round_trip_exact": true
+    },
+    "3_10_100/train/epochs_101_150.npz": {
+      "distribution": "geometric_feasible_v1",
+      "role": "archived online training stream",
+      "seed": 10045,
+      "generator_call_batch_size": 256,
+      "first_epoch": 101,
+      "last_epoch": 150,
+      "instances_per_epoch": 256,
+      "instance_order": "original generation order before training minibatch shuffling",
+      "reconstruction": "exact replay checked against the original frozen generator",
+      "original_generator_sha256": "3d739a83bada2e5b4de2b1a5bc1e4eb53727d75a270a61cd03e301c8e0ceb416",
+      "count": 12800,
+      "dimensions": [
+        3,
+        10,
+        100
+      ],
+      "sha256": "28134e4ce80073b907af41b60f204e390d509514a6bfad75f0c0ecd0c6d8d446",
+      "bytes": 62898171,
+      "fields": [
+        "warehouse_capacity",
+        "station_capacity",
+        "customer_demand",
+        "warehouse_fixed_cost",
+        "station_fixed_cost",
+        "cost_ws",
+        "cost_sc",
+        "warehouse_loc",
+        "station_loc",
+        "customer_loc"
+      ],
+      "round_trip_exact": true
+    },
+    "3_10_100/val/instances.npz": {
+      "distribution": "geometric_feasible_v1",
+      "role": "fixed validation used to choose epoch145",
+      "source_name": "gurobi_validation32_20261016_r1/instances.pt",
+      "source_sha256": "0137c3cc9185ad7b116ea573ab0f51349ad6e39333d1e0d3a2a083f97591e724",
+      "seed": 20045,
+      "count": 32,
+      "dimensions": [
+        3,
+        10,
+        100
+      ],
+      "sha256": "3529cedbbb1608a7236c6ea1fcc60879377874ecc64008dd902f8ace0b6713a2",
+      "fields": [
+        "warehouse_capacity",
+        "station_capacity",
+        "customer_demand",
+        "warehouse_fixed_cost",
+        "station_fixed_cost",
+        "cost_ws",
+        "cost_sc",
+        "warehouse_loc",
+        "station_loc",
+        "customer_loc"
+      ],
+      "round_trip_exact": true
+    }
+  },
+  "checkpoint": {
+    "path": "epoch145.npz",
+    "epoch": 145,
+    "architecture": "coupled_path_v1",
+    "policy_config": {
+      "embed_dim": 128,
+      "num_heads": 8,
+      "num_layers": 2,
+      "temperature": 1.0,
+      "dynamic_context": true
+    },
+    "sha256": "6e1c3b79ae905fa2d8be95e4482f480eecbc237ea3aad462aa95601a73455c9a",
+    "original_pt_sha256": "b552a316f5115cd568107afecfdad1340dd4e23adc02832e4ba33dd91e1572fa",
+    "original_tensors_identical": true,
+    "original_portable_copy_sha256": "6e1c3b79ae905fa2d8be95e4482f480eecbc237ea3aad462aa95601a73455c9a",
+    "copied_byte_for_byte": true
+  }
+}

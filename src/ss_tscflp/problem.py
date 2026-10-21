@@ -232,26 +232,14 @@ def path_increment_values(mass, cost_sc, cost_ws, fixed_s, fixed_w):
     return delta + fixed_w
 
 
-def step_increment(
-    td, rows, *, station, mass, customer=None, warehouse=None, new_s=None, new_w=None
-):
-    # 计算两种解码过程的边际目标值；运行时累加器均使用 float64。
-    if customer is not None and warehouse is not None:
-        return path_increment_values(
-            mass,
-            td["cost_sc"][rows, station, customer].double(),
-            td["cost_ws"][rows, warehouse, station].double(),
-            new_s * td["station_fixed_cost"][rows, station].double(),
-            new_w * td["warehouse_fixed_cost"][rows, warehouse].double(),
-        )
-    if customer is not None:
-        return (
-            mass * td["cost_sc"][rows, station, customer].double()
-            + new_s * td["station_fixed_cost"][rows, station].double()
-        )
-    return (
-        mass * td["cost_ws"][rows, warehouse, station].double()
-        + new_w * td["warehouse_fixed_cost"][rows, warehouse].double()
+def step_increment(td, rows, *, station, mass, customer, warehouse, new_s, new_w):
+    # 路径动作的完整四项边际费用，保持原运算顺序与float64精度。
+    return path_increment_values(
+        mass,
+        td["cost_sc"][rows, station, customer].double(),
+        td["cost_ws"][rows, warehouse, station].double(),
+        new_s * td["station_fixed_cost"][rows, station].double(),
+        new_w * td["warehouse_fixed_cost"][rows, warehouse].double(),
     )
 
 

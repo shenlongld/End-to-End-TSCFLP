@@ -56,7 +56,7 @@ def test_npz_rejects_bad_input(tmp_path, tiny_instance, case):
         load_instances(path)
 
 
-def test_split_overlap_detected_even_if_metadata_differs(tmp_path, tiny_instance):
+def test_split_overlap(tmp_path, tiny_instance):
     from ss_tscflp.dataset import load_dataset_directory, save_instances
 
     for index, split in enumerate(("train", "val")):
@@ -65,7 +65,7 @@ def test_split_overlap_detected_even_if_metadata_differs(tmp_path, tiny_instance
         load_dataset_directory(tmp_path, ("train", "val"))
 
 
-def test_checkpoint_preserves_optimizer_keys_rng_and_tensor_dtypes(tmp_path):
+def test_checkpoint_round_trip(tmp_path):
     import json
 
     import numpy as np
@@ -93,7 +93,7 @@ def test_checkpoint_preserves_optimizer_keys_rng_and_tensor_dtypes(tmp_path):
         assert restored[key].dtype == payload[key].dtype
 
 
-def test_config_paths_resolve_from_file_and_cli_from_cwd(tmp_path, monkeypatch):
+def test_config_path_resolution(tmp_path, monkeypatch):
     import argparse
 
     from ss_tscflp.common import parse_config
@@ -125,7 +125,7 @@ def test_explicit_cuda_never_falls_back_to_cpu(monkeypatch):
 
 
 @pytest.mark.parametrize("sizes", [(5, 10, 20), (1, 5, 100), (1, 1, 1), (8, 2, 7), (2, 8, 2)])
-def test_generator_generator_capacity_invariants(sizes):
+def test_generator_capacity_invariants(sizes):
     gen = TSCFLPGenerator(*sizes, seed=7)
     td = gen([64])
     validate_instance(td)
@@ -151,7 +151,7 @@ def test_generator_generator_capacity_invariants(sizes):
     assert (warehouse_base <= td["warehouse_capacity"] + 1e-5).all()
 
 
-def test_generator_generator_seed_reproducible_and_stream_advances():
+def test_generator_seed_and_stream():
     first, second = TSCFLPGenerator(seed=99), TSCFLPGenerator(seed=99)
     a, b = first([8]), second([8])
     assert all(torch.equal(a[key], b[key]) for key in a.keys())
@@ -159,12 +159,12 @@ def test_generator_generator_seed_reproducible_and_stream_advances():
 
 
 @pytest.mark.parametrize("kwargs", [{"n_w": 0}, {"n_c": -1}, {"cost_factor": -1}])
-def test_generator_generator_rejects_bad_configuration(kwargs):
+def test_generator_rejects_bad_configuration(kwargs):
     with pytest.raises(ValueError):
         TSCFLPGenerator(**kwargs)
 
 
-def test_generator_instance_rejects_malformed_schema(tiny_instance):
+def test_generator_rejects_bad_schema(tiny_instance):
     tiny_instance["cost_sc"][0, 0, 0] = float("nan")
     with pytest.raises(ValueError, match="finite float32"):
         validate_instance(tiny_instance)

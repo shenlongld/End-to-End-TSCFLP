@@ -12,7 +12,7 @@ dist/
 .env
 .env.*
 gurobi.lic
-data/**/*.npz
+# Versioned evaluation data and the epoch145 checkpoint.
 checkpoints/*
 !checkpoints/.gitkeep
 results/*

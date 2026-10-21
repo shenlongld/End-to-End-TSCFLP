@@ -3,26 +3,11 @@
 import torch
 from tensordict import TensorDict
 
-from .problem import check_feasible, compute_gap, objective
+from .problem import compute_gap, objective
 
 
 def cost_consistency_error(td: TensorDict) -> torch.Tensor:
     return (td["incremental_cost"] - objective(td)).abs()
-
-
-def episode_metrics(td: TensorDict) -> dict[str, float | None]:
-    feasible = check_feasible(td).valid
-
-    def mean_success(value: torch.Tensor) -> float | None:
-        return float(value[feasible].float().mean()) if feasible.any() else None
-
-    return {
-        "cost": mean_success(objective(td)),
-        "infeasible_rate": float(td["infeasible"].float().mean()),
-        "active_stations": mean_success(td["station_open"].sum(-1)),
-        "active_warehouses": mean_success(td["warehouse_open"].sum(-1)),
-        "reward": float(td["reward"].mean()),
-    }
 
 
 def inference_metrics(result):

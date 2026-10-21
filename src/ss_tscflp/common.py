@@ -66,7 +66,6 @@ def parse_config(parser: argparse.ArgumentParser, argv=None) -> dict:
             "checkpoint",
             "output",
             "resume",
-            "initialize_from",
             "solution",
         ):
             if settings.get(key) is not None:

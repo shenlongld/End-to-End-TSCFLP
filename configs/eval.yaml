@@ -1,8 +1,8 @@
 device: cpu
 threads: 1
 seed: 99123
-data: ../data/test/instances.npz
-checkpoint: ../checkpoints/path/best.npz
+data: ../data/3_10_100/test/instances.npz
+checkpoint: ../data/epoch145.npz
 output: ../results/evaluation
 methods: [greedy, sampling, sa]
 batch_size: 8

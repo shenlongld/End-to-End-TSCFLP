@@ -5,17 +5,13 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ss-tscflp"
 version = "1.0.0"
-description = "面向单源两级容量约束设施选址问题的可复现神经网络与运筹优化求解工具"
+description = "面向单源两级容量约束设施选址问题的强化学习求解工具"
 readme = "README.md"
 requires-python = ">=3.11,<3.14"
 dependencies = [
     "torch==2.11.0",
     "tensordict==0.13.0",
-    "torchrl==0.13.3",
-    "rl4co==0.6.0",
-    "lightning==2.6.6",
     "numpy==2.3.5",
-    "scipy==1.16.3",
     "PyYAML==6.0.3",
 ]
 

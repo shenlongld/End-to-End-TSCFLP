@@ -15,7 +15,7 @@ from ss_tscflp.problem import (
 )
 
 
-def test_assignment_checker_does_not_invoke_solver(tmp_path, tiny_instance, tiny_solution):
+def test_checker_never_solves(tmp_path, tiny_instance, tiny_solution):
     from ss_tscflp.baselines.common import baseline_main, save_solutions
     from ss_tscflp.dataset import load_instances, save_instances
 
@@ -62,7 +62,7 @@ def milp_brute_force(td):
     return best
 
 
-def test_milp_milp_equals_exhaustive_atomic_solution(tiny_instance):
+def test_milp_equals_exhaustive_atomic_solution(tiny_instance):
     result = milp_licensed_solve(tiny_instance)
     assert result.is_optimal
     assert result.optimal_cost == pytest.approx(milp_brute_force(tiny_instance), abs=1e-4)
@@ -72,7 +72,7 @@ def test_milp_milp_equals_exhaustive_atomic_solution(tiny_instance):
     assert result.solve_time >= 0
 
 
-def test_milp_milp_capacity_and_zero_fixed_activation(tiny_instance):
+def test_milp_capacity_and_zero_fixed_activation(tiny_instance):
     tiny_instance["station_fixed_cost"].zero_()
     tiny_instance["warehouse_fixed_cost"].zero_()
     tiny_instance["station_capacity"] = torch.tensor([[5.0, 4.0, 3.0]])
@@ -82,7 +82,7 @@ def test_milp_milp_capacity_and_zero_fixed_activation(tiny_instance):
     assert result.optimal_cost == pytest.approx(milp_brute_force(tiny_instance), abs=1e-4)
 
 
-def test_milp_milp_infeasible_has_no_fake_optimum(tiny_instance):
+def test_milp_infeasible_has_no_fake_optimum(tiny_instance):
     tiny_instance["warehouse_capacity"].zero_()
     result = milp_licensed_solve(tiny_instance)
     assert not result.is_optimal
@@ -90,7 +90,7 @@ def test_milp_milp_infeasible_has_no_fake_optimum(tiny_instance):
 
 
 @pytest.mark.parametrize("has_incumbent", [False, True])
-def test_milp_milp_timeout_does_not_claim_optimum(tiny_instance, monkeypatch, has_incumbent):
+def test_milp_timeout_does_not_claim_optimum(tiny_instance, monkeypatch, has_incumbent):
     # 微型问题可能在检查正数时间上限前就求解完成。
     # 测试固定终止状态元数据，避免依赖计时竞争；
     # 约束和返回的可行解仍由原生模型产生。
@@ -131,7 +131,7 @@ def test_milp_milp_timeout_does_not_claim_optimum(tiny_instance, monkeypatch, ha
         assert result.objective_cost is None and result.solution is None
 
 
-def test_milp_milp_accepts_a_completed_state_without_trusting_caches(tiny_solution):
+def test_milp_recomputes_state(tiny_solution):
     # 应根据求解器自身输出的分配检查结果，
     # 不能沿用其他解码方案的负载缓存。
     tiny_solution["station_load"].zero_()

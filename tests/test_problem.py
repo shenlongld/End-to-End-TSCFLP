@@ -5,7 +5,7 @@ import torch
 from tensordict import TensorDict
 
 from ss_tscflp.common import set_seed
-from ss_tscflp.env import TSCFLPEnv
+from ss_tscflp.env import Env
 from ss_tscflp.generator import TSCFLPGenerator
 from ss_tscflp.metrics import cost_consistency_error
 from ss_tscflp.problem import (
@@ -15,7 +15,7 @@ from ss_tscflp.problem import (
 )
 
 
-def test_public_dataclasses_use_canonical_functions(tiny_instance):
+def test_public_problem_api(tiny_instance):
     from ss_tscflp.problem import Instance, Solution
 
     instance = Instance(tiny_instance)
@@ -36,7 +36,7 @@ def test_gap_missing_zero_and_exact_optimum():
     assert gap[5].item() == 0
 
 
-def test_canonical_definitions_and_pickle_free_production_sources():
+def test_canonical_and_pickle_free():
     import ast
     from pathlib import Path
 
@@ -89,19 +89,19 @@ def tiny_solution(tiny_instance):
     return td
 
 
-def test_cost_consistency_cost_consistency(tiny_instance):
-    env = TSCFLPEnv()
+def test_incremental_cost(tiny_instance):
+    env = Env()
     td = env.reset(tiny_instance)
-    for action in [0, 1, 0, 0, 0]:
+    for action in [0, 2, 0]:
         td["action"] = torch.tensor([action])
         td = env.step(td)["next"]
         assert (cost_consistency_error(td) < 1e-4).all()
     assert objective(td).item() == 120
 
 
-def test_cost_consistency_random_cost_consistency_across_scales():
+def test_cost_consistency_across_scales():
     for nw, ns, nc in [(2, 4, 8), (5, 10, 20), (8, 15, 50)]:
-        env = TSCFLPEnv(generator=TSCFLPGenerator(nw, ns, nc, seed=34))
+        env = Env(generator=TSCFLPGenerator(nw, ns, nc, seed=34))
         td = env.reset(batch_size=[32])
         while not td["done"].all():
             weights = td["action_mask"].float()
@@ -112,13 +112,13 @@ def test_cost_consistency_random_cost_consistency_across_scales():
         assert (td["reward"][~td["infeasible"]] == -objective(td)[~td["infeasible"]]).all()
 
 
-def test_validity_checker_every_customer_exactly_one_station(tiny_solution):
+def test_customer_single_source(tiny_solution):
     assert check_feasible(tiny_solution).all_valid
     z, _ = assignment_matrices(tiny_solution)
     assert (z.sum(1) == 1).all()
 
 
-def test_validity_checker_every_active_station_exactly_one_warehouse(tiny_solution):
+def test_station_single_source(tiny_solution):
     _, a = assignment_matrices(tiny_solution)
     assert torch.equal(a.sum(1), tiny_solution["station_open"].long())
 
@@ -152,14 +152,14 @@ def test_validity_checker_warehouse_capacity(tiny_solution):
         ("warehouse_open", 1, True),
     ],
 )
-def test_validity_checker_checker_rejects_invalid_solution(tiny_solution, key, index, value):
+def test_rejects_invalid_solution(tiny_solution, key, index, value):
     tiny_solution[key][0, index] = value
     assert not check_feasible(tiny_solution).all_valid
     with pytest.raises(ValueError, match="Invalid TSCFLP"):
         check_feasible(tiny_solution, raise_on_error=True)
 
 
-def test_validity_checker_checker_rejects_fractional_assignments(tiny_solution):
+def test_rejects_fractional_assignment(tiny_solution):
     tiny_solution["customer_station_assignment"] = tiny_solution[
         "customer_station_assignment"
     ].float()
@@ -167,6 +167,6 @@ def test_validity_checker_checker_rejects_fractional_assignments(tiny_solution):
         check_feasible(tiny_solution)
 
 
-def test_validity_checker_checker_rejects_nan_tolerance(tiny_solution):
+def test_validity_checker_rejects_nan_tolerance(tiny_solution):
     with pytest.raises(ValueError, match="finite"):
         check_feasible(tiny_solution, atol=float("nan"))
